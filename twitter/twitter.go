@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/dichro/ephemera/twitter/cmd"
+	"github.com/cgeisser/ephemera/twitter/cmd"
 	"github.com/golang/glog"
 	"github.com/spf13/viper"
 )
