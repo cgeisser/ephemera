@@ -7,6 +7,7 @@ import (
 
 	"github.com/ChimeraCoder/anaconda"
 	"github.com/dichro/ephemera/pinaf"
+	"github.com/golang/glog"
 	"github.com/spf13/cobra"
 	"github.com/syndtr/goleveldb/leveldb"
 )
@@ -21,6 +22,7 @@ func init() {
 }
 
 var timelineKey = TimelineKey{pinaf.JSONKey{pinaf.New("ephemera", "timeline", "fetch")}}
+var favoritesKey = TimelineKey{pinaf.JSONKey{pinaf.New("ephemera", "favorites", "fetch")}}
 
 type TimelineKey struct {
 	key pinaf.JSONKey
@@ -44,6 +46,20 @@ func (k TimelineKey) Put(b *leveldb.Batch, tweet anaconda.Tweet) error {
 
 func (k TimelineKey) Scan(db *leveldb.DB) TimelineIterator {
 	return TimelineIterator{k.key.Scan(db)}
+}
+
+func (k TimelineKey) IdRange(db *leveldb.DB) (low, high int64, err error) {
+	i := k.Scan(db)
+	defer i.Release()
+	if !i.First() {
+		return
+	}
+	if low, err = i.Key(); err == nil {
+		i.Last()
+		high, err = i.Key()
+	}
+	glog.Infof("idRange yielded %d, %d error %v", low, high, err)
+	return
 }
 
 type TimelineIterator struct {
