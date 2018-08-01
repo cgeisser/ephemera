@@ -33,6 +33,22 @@ func TestKeepTweets(t *testing.T) {
 			CreatedAt: "Tue Jul 17 20:15:43 -0700 2016"}, false},
 		{anaconda.Tweet{Retweeted: true, FavoriteCount: 5,
 			CreatedAt: "Tue Jul 17 20:15:43 -0700 2016"}, false},
+		// Favorites
+		{anaconda.Tweet{Favorited: true, CreatedAt: "Tue Jul 17 20:15:43 -0700 2018"}, true},
+		{anaconda.Tweet{Favorited: true, CreatedAt: "Tue Jul 17 14:15:43 -0700 2018"}, false},
+		{anaconda.Tweet{Favorited: true, CreatedAt: "Tue Jul 17 20:15:43 -0700 2016"}, false},
+		{anaconda.Tweet{Favorited: true, RetweetCount: 3,
+			CreatedAt: "Tue Jul 17 20:15:43 -0700 2016"}, false},
+		{anaconda.Tweet{Favorited: true,FavoriteCount: 3,
+			CreatedAt: "Tue Jul 17 20:15:43 -0700 2016"}, false},
+		{anaconda.Tweet{Favorited: true,RetweetCount: 5,
+			CreatedAt: "Tue Jul 17 20:15:43 -0700 2016"}, false},
+		{anaconda.Tweet{Favorited: true,FavoriteCount: 5,
+			CreatedAt: "Tue Jul 17 20:15:43 -0700 2016"}, false},
+		{anaconda.Tweet{Favorited: true,Retweeted: true, RetweetCount: 5,
+			CreatedAt: "Tue Jul 17 20:15:43 -0700 2016"}, false},
+		{anaconda.Tweet{Favorited: true,Retweeted: true, FavoriteCount: 5,
+			CreatedAt: "Tue Jul 17 20:15:43 -0700 2016"}, false},
 	}
 
 	for _, test := range tests {
