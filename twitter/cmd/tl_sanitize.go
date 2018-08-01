@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-
+	"github.com/ChimeraCoder/anaconda"
 	"github.com/dichro/ephemera/pinaf"
 	"github.com/golang/glog"
 	"github.com/spf13/cobra"
@@ -46,8 +46,16 @@ func TimelineSanitize(cmd *cobra.Command, args []string) {
 			continue
 		}
 		b := new(leveldb.Batch)
-		fmt.Println("dropping", tweet.Id)
-		t, err := api.DeleteTweet(tweet.Id, true)
+		var t anaconda.Tweet
+		var err error
+		if tweet.Favorited {
+			fmt.Println("unfaving", tweet.Id)
+			t, err = api.Unfavorite(tweet.Id)
+		} else {
+			fmt.Println("dropping", tweet.Id)
+			t, err = api.DeleteTweet(tweet.Id, true)
+
+		}
 		if err != nil {
 			glog.Error(err)
 			continue

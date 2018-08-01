@@ -120,23 +120,31 @@ func (p Policy) Keep(tweet anaconda.Tweet, now time.Time) (keep bool, reason str
 		return true, "unparseable creation time"
 	} else {
 		if now.Sub(t) < p.MaxAge {
-			return true, "too recent"
+			if tweet.Favorited {
+				return true, "favorite too recent"
+			} else {
+				return true, "too recent"
+			}
 		}
-	}
-	if strings.HasPrefix(tweet.Text, "RT @") || tweet.Retweeted {
-		return false, "retweet"
-	}
-	if tweet.RetweetCount >= p.MinRetweets || tweet.FavoriteCount >= p.MinStars {
-		return true, "too popular"
-	}
-	if len(tweet.Entities.Media) > 0 && p.KeepMedia {
-		return true, "has media"
+		if tweet.Favorited {
+			return false, "favorite"
+		}
+		if strings.HasPrefix(tweet.Text, "RT @") || tweet.Retweeted {
+			return false, "retweet"
+		}
+		if tweet.RetweetCount >= p.MinRetweets || tweet.FavoriteCount >= p.MinStars {
+			return true, "too popular"
+		}
+		if len(tweet.Entities.Media) > 0 && p.KeepMedia {
+			return true, "has media"
+		}
 	}
 	/*
 		if tweet.InReplyToStatusID != 0 {
 			return true, "replies"
 		}
 	*/
+
 	return false, "no rule match"
 }
 
